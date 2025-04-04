@@ -5,23 +5,23 @@ import { asyncHandler } from './utils/AsyncHandler.js';
 
 dotenv.config();
 
-dbConnection().then(() => {
-  app.listen(
-    process.env.PORT || 3000,
-    asyncHandler(async () => {
-      console.log(`app is listening on ${process.env.PORT}`);
-    }),
-  );
-});
+// dbConnection().then(() => {
+//   app.listen(
+//     process.env.PORT || 3000,
+//     asyncHandler(async () => {
+//       console.log(`app is listening on ${process.env.PORT}`);
+//     }),
+//   );
+// });
 
 // Another Way to listen on port
 
-// dbConnection()
-//   .then(() => {
-//     app.listen(process.env.PORT1 || 3000, () => {
-//       console.log(`app is listening on ${process.env.PORT}`);
-//     });
-//   })
-//   .catch((error) => {
-//     console.log('Connection Error', error);
-//   });
+dbConnection()
+  .then(() => {
+    app.listen(process.env.PORT1 || 3000, () => {
+      console.log(`app is listening on ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log('Connection Error', error);
+  });

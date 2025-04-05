@@ -1,1 +1,1 @@
-export const DB_NAME = 'Task Manager API';
+export const DB_NAME = 'TaskManagerAPI';

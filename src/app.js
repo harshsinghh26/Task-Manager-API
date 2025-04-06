@@ -15,4 +15,8 @@ import router from './routes/user.routes.js';
 
 app.use('/api/v1/users', router);
 
+import taskrouter from './routes/task.routes.js';
+
+app.use('/api/v1/task', taskrouter);
+
 export default app;

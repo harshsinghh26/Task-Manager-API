@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Task } from '../models/task.models.js';
 import { User } from '../models/users.models.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -23,7 +24,7 @@ const createTask = asyncHandler(async (req, res) => {
   const createdTask = await Task.create({
     title,
     description,
-    user: user._id,
+    user: req.user._id,
   });
 
   if (!createdTask) {
@@ -45,10 +46,26 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getAllTask = asyncHandler(async (req, res) => {
   const task = await Task.find({ user: req.user?._id });
-  console.log(task);
+  //   console.log(task);
   return res
     .status(200)
     .json(new ApiResponse(200, task, 'Task fetched Successfully!!'));
 });
 
-export { createTask, getAllTask };
+// Get Task by Id
+
+const getTaskById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const task = await Task.findById(id);
+
+  if (!task) {
+    throw new ApiError(404, 'Task not found!!');
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, task, 'Task fetched Successfully!!'));
+});
+
+export { createTask, getAllTask, getTaskById };

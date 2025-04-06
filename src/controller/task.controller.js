@@ -68,4 +68,45 @@ const getTaskById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, task, 'Task fetched Successfully!!'));
 });
 
-export { createTask, getAllTask, getTaskById };
+// Updaate Task
+
+const updateTask = asyncHandler(async (req, res) => {
+  const { title, description, completed } = req.body;
+  const { id } = req.params;
+
+  //   console.log(req.body);
+  //   console.log(req.params);
+  if (!(title && description && completed)) {
+    throw new ApiError(400, 'All fields are required');
+  }
+
+  const task = await Task.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        title,
+        description,
+        completed,
+      },
+    },
+    { new: true },
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, task, 'Details Updated Successfully!!'));
+});
+
+// Delete task that completed
+
+const deleteTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  await Task.findByIdAndDelete(id);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'Task deleted Successfully!!'));
+});
+
+export { createTask, getAllTask, getTaskById, updateTask, deleteTask };

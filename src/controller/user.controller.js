@@ -54,8 +54,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   return res
-    .status(200)
-    .json(new ApiResponse(200, createdUser, 'User Register Successfuly!!'));
+    .status(201)
+    .json(new ApiResponse(201, createdUser, 'User Register Successfuly!!'));
 });
 
 // User Login
@@ -100,7 +100,7 @@ const userLogin = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { loggedInUser, refreshToken, accessToken },
+        { user: loggedInUser, refreshToken, accessToken },
         'User logged In Successfully!!',
       ),
     );
@@ -108,6 +108,27 @@ const userLogin = asyncHandler(async (req, res) => {
 
 // User logout
 
-const userLogout = asyncHandler(async (req, res) => {});
+const userLogout = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    { new: true },
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie('refreshToken', options)
+    .clearCookie('accessToken', options)
+    .json(new ApiResponse(200, {}, 'User Logged Out Successfully!!'));
+});
 
 export { registerUser, userLogin, userLogout };

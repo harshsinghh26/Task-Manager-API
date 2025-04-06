@@ -3,6 +3,23 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/AsyncHandler.js';
 
+// Generate Tokens
+
+const generateTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.createAccessToken();
+    const refreshToken = user.createRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { refreshToken, accessToken };
+  } catch (error) {
+    throw new ApiError(500, 'Somthing went wrong while generating tokens!!');
+  }
+};
+
 // User registration
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -41,4 +58,52 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, 'User Register Successfuly!!'));
 });
 
-export { registerUser };
+// User Login
+
+const userLogin = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+  console.log(req.body);
+
+  if (!(username || email)) {
+    throw new ApiError(400, 'Email or username is required!!');
+  }
+
+  const user = await User.findOne({
+    $or: [{ email }, { username }],
+  });
+
+  if (!user) {
+    throw new ApiError(404, 'User not Found');
+  }
+
+  const isPassword = await user.isPasswordCorrect(password);
+
+  if (!isPassword) {
+    throw new ApiError(401, 'Password is wrong!!');
+  }
+
+  const { refreshToken, accessToken } = await generateTokens(user._id);
+
+  const loggedInUser = await User.findById(user._id).select(
+    '-password, -refreshToken',
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie('accessToken', accessToken, options)
+    .cookie('refreshToken', refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { loggedInUser, refreshToken, accessToken },
+        'User logged In Successfully!!',
+      ),
+    );
+});
+
+export { registerUser, userLogin };

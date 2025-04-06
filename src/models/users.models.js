@@ -42,16 +42,16 @@ userSchema.pre('save', async function (next) {
 
 // Check if the password is correct or not
 
-userSchema.methods.isPasswordCorrect = async (password) => {
+userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 // Create Access Web Token
 
-userSchema.methods.createAccessToken = async () => {
+userSchema.methods.createAccessToken = async function () {
   return jwt.sign(
     {
-      id: this._id,
+      _id: this._id,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -62,10 +62,10 @@ userSchema.methods.createAccessToken = async () => {
 
 // create Refresh Token
 
-userSchema.methods.createRefreshToken = async () => {
+userSchema.methods.createRefreshToken = async function () {
   return jwt.sign(
     {
-      id: this._id,
+      _id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {

@@ -4,6 +4,8 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/AsyncHandler.js';
 
+// Creating task
+
 const createTask = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id);
 
@@ -39,4 +41,14 @@ const createTask = asyncHandler(async (req, res) => {
     );
 });
 
-export { createTask };
+// get task
+
+const getAllTask = asyncHandler(async (req, res) => {
+  const task = await Task.find({ user: req.user?._id });
+  console.log(task);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, task, 'Task fetched Successfully!!'));
+});
+
+export { createTask, getAllTask };

@@ -5,11 +5,6 @@ import {
   userLogout,
 } from '../controller/user.controller.js';
 import { verifyJWT } from '../middlewares/auth.middlewares.js';
-import {
-  createTask,
-  getAllTask,
-  getTaskById,
-} from '../controller/task.controller.js';
 
 const router = Router();
 

@@ -50,11 +50,11 @@ A full-featured Task Management API built using Node.js, Express, and MongoDB. T
 - **POST** `/api/v1/users/register` - Register a new user
 - **POST** `/api/v1/users/login` - Login with email and password
 - **POST** `/api/v1/users/logout` - Logout Current User
-- **POST** `/api/v1/task/createtask` - Change password
-- **GET** `/api/v1/task/getalltask` - Initiate password reset
-- **GET** `/api/v1/task/gettaskbyid/:id` - Refresh the Tokens
-- **PUT** `/api/v1/task/update/:id` - Refresh the Tokens
-- **PUT** `/api/v1/task/delete/:id` - Refresh the Tokens
+- **POST** `/api/v1/task/createtask` - Create Task
+- **GET** `/api/v1/task/getalltask` - Get All Task
+- **GET** `/api/v1/task/gettaskbyid/:id` - Get Task By Id
+- **PUT** `/api/v1/task/update/:id` - Update Task Details
+- **PUT** `/api/v1/task/delete/:id` - Delete Task
 
 ## Testing
 Use **Postman** or any API client to test the endpoints.
